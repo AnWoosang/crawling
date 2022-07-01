@@ -5,10 +5,12 @@ import pandas as pd
 from bs4 import BeautifulSoup as bs
 import requests
 from itertools import repeat
+import datetime
 
 def get_content(rank ,driv):
     contents = {}
 
+    date_format = '%Y.%m.%d'
     html = driver.page_source
     soup = bs(html, 'html.parser')
     content = soup.find_all('dd')
@@ -17,13 +19,12 @@ def get_content(rank ,driv):
     contents["artist"] = driver.find_element(by='xpath', value='//*[@class="info"]/div[2]').text
     contents["likes"] = soup.find('span', id="d_like_count").get_text()
     contents["album"] = content[0].get_text()
-    contents["released"] = content[1].get_text()
+    contents["released"] = datetime.datetime.strptime(content[1].get_text(), date_format)
     contents["genre"] = content[2].get_text()
 
     return contents
 
-
-driver = wd.Chrome('/home/woosang/crawl/chromedriver')
+driver = wd.Chrome('C:/users/dntkd/Desktop/usang/adsl/melon/crawling/crawl/chromedriver.exe')
 driver.maximize_window()
 
 url = 'https://www.melon.com/chart/index.htm'
@@ -79,6 +80,7 @@ while(1):
             while(1):
                 time.sleep(0.1)
                 v4 = path_weeks+str(l)+path_end
+                print(driver.find_element(by='xpath', value='//*[@id="serch_cnt"]/span[1]').text)
                 driver.find_element(by='xpath', value=v4).click()
 
                 # 장르종합
